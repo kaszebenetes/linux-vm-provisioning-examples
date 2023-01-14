@@ -1,0 +1,23 @@
+---
+# https://app.vagrantup.com/centos/boxes/7
+- name: web-1
+  box: centos/7
+  cpu: 1
+  ram: 512
+  ip: 10.0.0.2
+# - name: web-2
+#   box: centos/7
+#   cpu: 1
+#   ram: 512
+#   ip: 10.0.0.3
+# - name: web-lb
+#   box: centos/7
+#   cpu: 1
+#   ram: 512
+#   ip: 10.0.0.1
+
+
+# TODO:
+# Add haproxy in front of two different nginx servers
+# all in scripts
+# vagrant ssh web-1
