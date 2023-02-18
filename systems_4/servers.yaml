@@ -4,17 +4,17 @@
   box: centos/7
   cpu: 1
   ram: 512
-  ip: 10.0.0.2
+  ip: 10.0.0.21
 - name: web-2
   box: centos/7
   cpu: 1
   ram: 512
-  ip: 10.0.0.3
+  ip: 10.0.0.22
 - name: web-lb
   box: centos/7
   cpu: 1
   ram: 512
-  ip: 10.0.0.1
+  ip: 10.0.0.11
 
 
 # TODO:

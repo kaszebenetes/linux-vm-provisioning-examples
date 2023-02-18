@@ -26,6 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.nested = true
         libvirt.cpu_mode = "host-passthrough"
       end
+      srv.vm.provision "shell", path: "script_#{servers["name"]}.sh"
     end
   end
 end
