@@ -1,6 +1,14 @@
 #!/bin/bash
 
-yum -y install haproxy
+set -euo pipefail
+if [ $(sudo find . /etc/ | grep haproxy) -eq 0 ]
+then
+    echo "Installing haproxy service:"
+    yum -y install haproxy
+else
+    echo "Haproxy service is already installed."
+
+fi
 rm -f /etc/haproxy/haproxy.cfg
 echo "
 global
@@ -31,7 +39,14 @@ backend http_back
    server web-1 10.0.0.21:80 check
    server web-2 10.0.0.22:80 check
 " > /etc/haproxy/haproxy.cfg
-systemctl enable haproxy
-systemctl start haproxy
-systemctl restart haproxy
-systemctl status haproxy
+STATUS="$(systemctl is-active haproxy.service)"
+if ["${STATUS}" = "inactive"] then {
+    echo"Starting haproxy sevice:"
+    systemctl start haproxy.service
+    systemctl enable haproxy.service
+}
+else {
+    echo "Haproxy was active. Restarting service:"
+    systemctl restart haproxy.service
+    systemctl status haproxy.service
+}
