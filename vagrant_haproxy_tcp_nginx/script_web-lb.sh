@@ -1,9 +1,9 @@
 #!/bin/bash
 
+# Debug
 # set -x
-set -euo pipefail
 
-# set -e 
+set -euo pipefail
 
 ### vars
 
@@ -17,7 +17,7 @@ then
     echo "Haproxy package is already installed, proceeding..."
 else
     echo "Installing haproxy service:"
-    sudo yum -y install haproxy
+    yum -y install haproxy
 fi
 
 echo "
@@ -50,11 +50,12 @@ backend http_back
    server web-2 10.0.0.22:80 check
 " > /tmp/haproxy.cfg
 
-
+echo
+echo "==> Info: Checking haproxy config"
 if [ -f $HAPROXY_CONFIG_PATH ]
 then
     echo "Haproxy config exists, proceeding..."
-    
+
     TEMP_HAPROXY_CONFIG_CHECKSUM=$(sha256sum $TEMP_HAPROXY_CONFIG_PATH | awk '{print $1}')
     echo "TEMP_HAPROXY_CONFIG_CHECKSUM=$TEMP_HAPROXY_CONFIG_CHECKSUM"
 
@@ -78,11 +79,11 @@ else
 fi
 
 echo
-echo "Checking if haproxy service is running"
+echo "==> Info: Checking if haproxy service is running"
 # systemctl is-active return exit code 3 if service is not active
 STATUS="$(systemctl is-active haproxy.service; exit 0)"
 if [[ $STATUS != "active" ]]
-then 
+then
     echo "Starting haproxy sevice:"
     systemctl start haproxy.service
     systemctl enable haproxy.service
@@ -97,5 +98,5 @@ else
 fi
 
 echo
-echo "Printing haproxy.service status"
+echo "==> Info: Printing haproxy.service status"
 systemctl status haproxy.service

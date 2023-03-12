@@ -24,8 +24,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.qemu_use_session = false
         libvirt.cpus = servers["cpu"]
         libvirt.memory = servers["ram"]
-        libvirt.nested = true
-        libvirt.cpu_mode = "host-passthrough"
       end
       if servers["name"]== "web-lb"
         srv.vm.provision "shell", path: "script_web-lb.sh"
