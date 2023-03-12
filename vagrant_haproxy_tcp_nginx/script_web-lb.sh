@@ -22,32 +22,22 @@ fi
 
 echo "
 global
-   log /dev/log local0
-   log /dev/log local1 notice
-   chroot /var/lib/haproxy
-   stats timeout 30s
-   user haproxy
-   group haproxy
-   daemon
-
+        log 127.0.0.1   local0
+        log 127.0.0.1   local1 debug
+        maxconn   45000 # Total Max Connections.
+        daemon
+        nbproc      1 # Number of processing cores.
 defaults
-   log global
-   mode tcp
-   option httplog
-   option dontlognull
-   timeout connect 5000
-   timeout client 50000
-   timeout server 50000
+        timeout server 86400000
+        timeout connect 86400000
+        timeout client 86400000
+        timeout queue   1000s
 
-frontend http_front
-   bind *:80
-   stats uri /haproxy?stats
-   default_backend http_back
-
-backend http_back
-   balance roundrobin
-   server web-1 10.0.0.21:80 check
-   server web-2 10.0.0.22:80 check
+# [HTTP Site Configuration]
+listen http_web 10.0.0.11:80
+        mode tcp
+        server web-1 10.0.0.21:80 weight 1 maxconn 512 check
+        server web-2 10.0.0.22:80 weight 1 maxconn 512 check
 " > /tmp/haproxy.cfg
 
 echo
