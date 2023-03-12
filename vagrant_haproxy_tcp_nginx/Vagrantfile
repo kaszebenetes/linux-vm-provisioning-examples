@@ -29,8 +29,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         srv.vm.provision "shell", path: "script_web-lb.sh"
       elsif servers["name"].start_with?('web' ,'Web') && servers["name"] != "web-lb"
         srv.vm.provision "shell", path: "script_web.sh"
-      else
-        put "None script is going to start."
       end
     end
   end
