@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+set -x
 # set -euo pipefail
 
 
@@ -29,18 +29,43 @@ NAME_OF_MACHINE=$(cat /etc/hostname)
 if [ "$NAME_OF_MACHINE" = "web-1" ] || [ "$NAME_OF_MACHINE" = "web-2" ] 
 then
     echo "Setting up firewall rules.."
-    iptables -A INPUT -p tcp -s 10.0.0.11 -j ACCEPT
+    iptables -I OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -p tcp -s 10.0.0.111 --dport 22 -j ACCEPT
+    iptables -I INPUT -p tcp -s 10.0.0.11 --dport 80 -j ACCEPT
+    iptables -I OUTPUT -p tcp --dport 80 -j ACCEPT
+    iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT
+    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
     iptables -A INPUT -j DROP
+    iptables -A OUTPUT -j DROP
 
 
 elif [ "$NAME_OF_MACHINE" = "web-lb" ]
 then
     echo "Setting up firewall rules.."
-    iptables -A INPUT -p tcp -s 10.0.0.111 -j ACCEPT
+    iptables -I OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -A INPUT -p tcp -s 10.0.0.111 --dport 22 -j ACCEPT
+    iptables -I OUTPUT -p tcp --dport 80 -j ACCEPT
+    iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT
+    iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+    iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
     iptables -A INPUT -j DROP
+    iptables -A OUTPUT -j DROP
 
 elif [ "$NAME_OF_MACHINE" = "bastion" ]
 then
     echo "Setting up firewall rules.."
-    iptables -A INPUT -j ACCEPT
+    iptables -I OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -p tcp -s 192.168.0.0/16 --dport 22 -j ACCEPT
+    iptables -I INPUT -p tcp -s 10.0.0.0/24 --dport 22 -j ACCEPT
+    iptables -A INPUT -j DROP
+    iptables -I OUTPUT -p tcp --dport 80 -j ACCEPT
+    iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT
+    iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
+    iptables -I OUTPUT -p tcp -d 10.0.0.0/24 --dport 22 -j ACCEPT
+    iptables -A OUTPUT -j DROP
+    
 fi
