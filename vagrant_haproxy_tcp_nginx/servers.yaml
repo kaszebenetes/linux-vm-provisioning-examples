@@ -21,6 +21,12 @@
   ram: 512
   ip: 10.0.0.111
 
+  name: Bind
+  box: centos/7
+  cpu: 1
+  ram: 512
+  ip: 10.0.0.23
+
 
 # TODO:
 # Add haproxy in front of two different nginx servers
