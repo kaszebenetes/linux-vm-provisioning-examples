@@ -20,7 +20,7 @@ import time
 # pbar = tqdm(total=100)
 # for i in range(10):
     # Testing ssh connection to bastion.
-if c.sshtobastion != 0 :
+if c.sshtobastion != "0" :
     print("SSH connection to bastion is avaliable for you.")
     # pbar.update(10)
 else:
@@ -28,7 +28,7 @@ else:
     # pbar.close()
 
 # Testing ssh connection through bastion to another vms.
-if c.sshbastiontoweb1 != 0 :
+if c.sshbastiontoweb1 != "0" :
     print("SSH connection to web1 is avaliable for you.")
     # pbar.update(10)
 else:
@@ -36,14 +36,14 @@ else:
     # pbar.close()
     
 
-if c.sshbastiontoweb2 != 0 :
+if c.sshbastiontoweb2 != "0" :
     print("SSH connection to web2 is avaliable for you.")
     # pbar.update(10)
 else:
     print("Something went wrong.. No access to web-2.")
     # pbar.close()
 
-if c.sshbastiontoweblb != 0 :
+if c.sshbastiontoweblb != "0" :
     print("SSH connection to weblb is avaliable for you.")
     # pbar.update(10)
 else:

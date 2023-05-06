@@ -9,11 +9,12 @@ import time
 # SSH commands to vms..
 sshtobastion = os.system("ssh -L vagrant@10.0.0.111")
 
-sshbastiontoweblb = os.system("ssh -R 22:10.0.0.11:8080 vagrant@10.0.0.111")
+sshbastiontoweblb = os.system("ssh -R 22:10.0.0.11:8080 vagrant@10.0.0.111 | echo %errorlevel%")
+sshbastiontoweblb = os.system("ssh -R 22:10.0.0.11:8080 vagrant@10.0.0.111 | echo %errorlevel%")
 
-sshbastiontoweb1 = os.system("ssh -R 8080:10.0.0.21:22 vagrant@10.0.0.111")
+sshbastiontoweb1 = os.system("ssh -R 22:10.0.0.21:8080 vagrant@10.0.0.111 | echo %errorlevel%")
 
-sshbastiontoweb2 = os.system("ssh -R 8080:10.0.0.22:22 vagrant@10.0.0.111")
+sshbastiontoweb2 = os.system("ssh -R 22:10.0.0.22:8080 vagrant@10.0.0.111 | echo %errorlevel%")
 #
 
 # Checking if iptables have been saved..
