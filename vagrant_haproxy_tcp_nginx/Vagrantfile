@@ -25,10 +25,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.cpus = servers["cpu"]
         libvirt.memory = servers["ram"]
       end
-      if servers["name"]== "web-lb"
+      if servers["name"]== "web-lb" || servers["name"]== "Web-lb"
         srv.vm.provision "shell", path: "script_web-lb.sh"
         srv.vm.provision "shell", path: "script_firewall.sh"
-      elsif servers["name"].start_with?('web' ,'Web') && servers["name"] != "web-lb"
+      elsif servers["name"].start_with?('web' ,'Web') && servers["name"] != "web-lb" && servers["name"] != "Web-lb"
         srv.vm.provision "shell", path: "script_web.sh"
         srv.vm.provision "shell", path: "script_firewall.sh"
       elsif servers["name"].start_with?('Bastion' ,'bastion' ,'bastionn')
