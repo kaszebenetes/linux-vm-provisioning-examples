@@ -15,6 +15,11 @@
   cpu: 1
   ram: 512
   ip: 10.0.0.11
+- name: bastion
+  box: centos/7
+  cpu: 1
+  ram: 512
+  ip: 10.0.0.111
 
 
 # TODO:
