@@ -14,14 +14,14 @@ sshbastiontoweb2=$(ssh -R 22:10.0.0.22:8080 vagrant@10.0.0.111 | cat %errorlevel
 #
 
 # Checking if iptables have been saved..
-iptablesbastion=$(ssh -L vagrant@10.0.0.111 | /etc/sysconfig/iptables)
+iptablesbastion=$(ssh -R vagrant@10.0.0.111 | -f /etc/sysconfig/iptables)
 
 iptablesweb1=$(ssh -R 22:10.0.0.21:22 vagrant@10.0.0.111)
 
 iptablesweb2=$(ssh -R 22:10.0.0.22:22 vagrant@10.0.0.111)
 
 
-iptables=$(ssh -L vagrant@10.0.0.111 | iptables -L)
+iptables=$(ssh -R vagrant@10.0.0.111 | iptables -L)
 # Testing ssh connection to bastion.
 if [ "$sshtobastion" != "0" ]
 then
