@@ -1,29 +1,15 @@
 #!/bin/bash
 
-
-# Vars:
-# SSH commands to vms..
-sshtobastion=$(ssh -L vagrant@10.0.0.111)
-
-sshbastiontoweblb=$(ssh -R 22:10.0.0.11:8080 vagrant@10.0.0.111 | cat %errorlevel%)
-sshbastiontoweblb=$(ssh -R 22:10.0.0.11:8080 vagrant@10.0.0.111 | cat %errorlevel%)
-
-sshbastiontoweb1=$(ssh -R 22:10.0.0.21:8080 vagrant@10.0.0.111 | cat %errorlevel%)
-
-sshbastiontoweb2=$(ssh -R 22:10.0.0.22:8080 vagrant@10.0.0.111 | cat %errorlevel%)
-#
-
-# Checking if iptables have been saved..
-iptablesbastion=$(ssh -R vagrant@10.0.0.111 | -f /etc/sysconfig/iptables)
-
-iptablesweb1=$(ssh -R 22:10.0.0.21:22 vagrant@10.0.0.111)
-
-iptablesweb2=$(ssh -R 22:10.0.0.22:22 vagrant@10.0.0.111)
+# set -x
+# set -euo
 
 
-iptables=$(ssh -R vagrant@10.0.0.111 | iptables -L)
+# Remember about set jumphosting in .ssh/config. It doesnt work without it.
+
 # Testing ssh connection to bastion.
-if [ "$sshtobastion" != "0" ]
+
+ssh vagrant@Bastion exit 0
+if [ $(echo $?) = "0" ]
 then
     echo "==> INFO: SSH connection to bastion is avaliable for you."
 else
@@ -31,62 +17,65 @@ else
 fi
 
 # Testing ssh connection through bastion to another vms.
-if [ "$sshbastiontoweb1" != "0" ]
+
+# Vars:
+var points = 0
+#
+ssh vagrant@Web-1 exit 0
+if [ $(echo $?) = "0" ]
 then
     echo "==> INFO: SSH connection to web1 is avaliable for you by bastion."
+    points+=1
 else
     echo "==> INFO: Something went wrong.. No access to web-1."
 fi
     
-
-if [ "$sshbastiontoweb2" != "0" ]
+ssh vagrant@Web-2 exit 0
+if [ $(echo $?) = "0" ]
 then
     echo "==> INFO: SSH connection to web2 is avaliable for you by bastion."
+    points+=1
 else
     echo "==> INFO: Something went wrong.. No access to web-2."
 fi
 
-if [ "$sshbastiontoweblb" != "0" ]
+ssh vagrant@Web-lb exit 0
+if [ $(echo $?) = "0" ]
 then
     echo "==> INFO: SSH connection to weblb is avaliable for you by bastion."
+    points+=1
 else
     echo "==> INFO: Something went wrong.. No access to web-lb."
 fi
     
-if [ "$iptablesbastion" ] && [ -f /etc/sysconfig/iptables ]
+if [ "$(ssh vagrant@Bastion " ls /etc/sysconfig/ | grep 'iptables'")" ] 
 then
     echo "==> INFO: Bastion iptables have been stored."
+    points+=1
 else
     echo "==> INFO: Bastion iptables haven't been stored."
 fi
+echo "In ssh test part u got:$points "
 
-if [ "$iptablesweblb" ] && [ -f /etc/sysconfig/iptables ]
+
+if [ "$(ssh -A -J vagrant@Web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
 then
     echo "==> INFO: Web-lb's iptables have been stored."
 else
     echo "==> INFO: Web-lb's iptables haven't been stored."
 fi
 
-if [ "$iptablesweb1" ] && [ -f /etc/sysconfig/iptables ]
+if [ "$(ssh -A -J vagrant@Web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
 then
     echo "==> INFO: Web-1's iptables have been stored."
 else
     echo "==> INFO: Web-1's iptables haven't been stored."
 fi
-
-if [ "$iptablesweb2" ] && [ -f /etc/sysconfig/iptables ] 
+     
+if [ "$(ssh -A -J vagrant@Web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
 then
     echo "==> INFO: Web-2's iptables have been stored."
 else
     echo "==> INFO: Web-2's iptables haven't been stored."
 fi
 
-curl 10.0.0.11
-            
-        
-    
-        
-    
-
-    
-    

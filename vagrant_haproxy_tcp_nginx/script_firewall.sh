@@ -38,8 +38,9 @@ then
     iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
     iptables -A INPUT -j DROP
     iptables -A OUTPUT -j DROP
+    sudo -i
     iptables-save > /etc/sysconfig/iptables
-
+    exit
 
 elif [ "$NAME_OF_MACHINE" = "web-lb" ]
 then
@@ -54,8 +55,9 @@ then
     iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
     iptables -A INPUT -j DROP
     iptables -A OUTPUT -j DROP
+    sudo -i
     iptables-save > /etc/sysconfig/iptables
-
+    exit
 elif [ "$NAME_OF_MACHINE" = "bastion" ]
 then
     echo "Setting up firewall rules.."
@@ -69,5 +71,7 @@ then
     iptables -I OUTPUT -p udp --dport 53 -j ACCEPT
     iptables -I OUTPUT -p tcp -d 10.0.0.0/24 --dport 22 -j ACCEPT
     iptables -A OUTPUT -j DROP
+    sudo -i
     iptables-save > /etc/sysconfig/iptables
+    exit
 fi
