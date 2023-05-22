@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks: 
+    - debug:
+        msg: "Hello"
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+    - name: Install the latest version of python3
+      ansible.builtin.dnf:
+        name: python3-dnf
+        state: latest
+    - name: Install the latest version of Vim
+      ansible.builtin.dnf:
+        name: vim
+        state: latest
