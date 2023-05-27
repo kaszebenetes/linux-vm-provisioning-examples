@@ -5,21 +5,26 @@ all:
     ansible_password: q1w2e3
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   children:
-
     hypervisors:
       children:
-        desktophp:
+        # desktophp:
+        #   hosts:
+        #     desktophp1:
+        #       ansible_host: 10.0.0.1
+        desktoppc:
           hosts:
-            desktophp1:
+            desktopfedora:
               ansible_host: 10.0.0.1
-
           children:
             vms:
               vars: 
                 ansible_user: vagrant
                 ansible_password: vagrant
-                ansible_ssh_private_key_file: ~/Documents/Miki/examples/vagrant_haproxy_tcp_nginx/.vagrant/machines/{{ ssh_vagrant_hostname }}/libvirt/private_key
-                ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -q vagrant@10.0.0.111 -i ~/Documents/Miki/examples/vagrant_haproxy_tcp_nginx/.vagrant/machines/Bastion/libvirt/private_key"'
+                ansible_ssh_private_key_file: ~/Dokumenty/github/examples/vagrant_haproxy_tcp_nginx/.vagrant/machines/{{ ssh_vagrant_hostname }}/libvirt/private_key
+                ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+                nginx_config_path: /etc/nginx/nginx.conf
+                index_path: /usr/share/nginx/html/index.html
+                haproxy_config: /etc/haproxy/haproxy.cfg
               children:
                 webservers:
                   hosts:
@@ -29,23 +34,19 @@ all:
                     web2.kobeeq.eu:
                       ssh_vagrant_hostname: Web-2
                       ansible_host: 10.0.0.22
-
                 loadbalancers:
                   hosts:
                     weblb.kobeeq.eu:
                       ssh_vagrant_hostname: Web-lb
                       ansible_host: 10.0.0.11
-                
                 dnsservers:
                   hosts:
                     bind.kobeeq.eu:
                       ssh_vagrant_hostname: Bind
                       ansible_host: 10.0.0.23
-                
                 bastions:
                   hosts:
                     bastion.kobeeq.eu:
-                      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
                       ssh_vagrant_hostname: Bastion
                       ansible_host: 10.0.0.111
 
