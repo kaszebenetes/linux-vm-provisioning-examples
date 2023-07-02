@@ -1,0 +1,15 @@
+---
+- name: Copy over templated index.html
+  ansible.builtin.template:
+    # src: "{{ playbook_dir }}/vms/web_config/index.txt"
+    # content: |
+    #   this is text which will be copied over to the destination file
+    src: index.html.j2
+    dest: "{{ nginx_index_path }}"
+    # remote_src: false
+  register: index_file
+  notify:
+    - Restarting nginx service
+
+- debug:
+    var: index_file

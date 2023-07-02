@@ -1,43 +1,27 @@
 ---
-
 # - hosts: all
 #   gather_facts: true
 #   become: true
+#   tasks:
+#     - debug:
+#         var: hostvars[inventory_hostname]
 
-- hosts: webservers
+- name: "Provisioning web-servers.."
+  hosts: webservers
   gather_facts: true
   become: true
+  pre_tasks:
+    - debug:
+        msg: "Provisioning pre.."
   tasks:
     - debug:
-        msg: "Provisioning web-servers.."
-    # - debug:
-    #     var: hostvars[inventory_hostname]
+        msg: "Provisioning task.."
+  post_tasks:
+    - debug:
+        msg: "Provisioning post .."
+  roles:
+    - nginx
 
-    - name: Install the latest version repository epel-release
-      ansible.builtin.yum:
-        name: epel-release
-        state: latest
-
-    - name: Install the latest version of Nginx
-      ansible.builtin.yum:
-        name: nginx
-        state: latest
-
-    - name: Starting nginx service, if it's not started
-      ansible.builtin.service:
-        name: nginx
-        state: started
-
-    - name: Restarting nginx service, if config file has been changed
-      systemd:
-        name: nginx
-        state: restarted
-      when: nginx_config_path.changed and index_path.changed
-
-    - name: Inserting content of index.html
-      ansible.builtin.copy:
-        content: ./web_config/index.txt
-        dest: "/usr/share/nginx/html/index.html"
 
 - hosts: loadbalancers
   gather_facts: true

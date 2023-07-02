@@ -1,0 +1,13 @@
+---
+- name: Install the latest version repository epel-release
+  ansible.builtin.yum:
+    name: epel-release
+    state: present
+
+- name: Install the latest version of Nginx
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+
+- import_tasks: config.yaml
+- import_tasks: service.yaml

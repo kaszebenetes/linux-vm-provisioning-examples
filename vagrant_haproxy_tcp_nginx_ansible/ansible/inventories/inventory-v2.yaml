@@ -1,0 +1,47 @@
+---
+all:
+  vars:
+    ansible_user: jakubpospieszny
+    ansible_password: test
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  children:
+    hypervisors:
+      children:
+        # desktophp:
+        #   hosts:
+        #     desktophp1:
+        #       ansible_host: 10.0.0.1
+        desktoppc:
+          hosts:
+            desktopfedora:
+              ansible_host: 10.0.0.1
+          children:
+            vms:
+              vars:
+                ansible_user: vagrant
+                ansible_password: vagrant
+                ansible_ssh_private_key_file: "{{ playbook_dir }}/../.vagrant/machines/{{ ssh_vagrant_hostname }}/libvirt/private_key"
+              children:
+                webservers:
+                  hosts:
+                    web-1:
+                      ssh_vagrant_hostname: web-1
+                      ansible_host: 10.0.0.21
+                    web-2:
+                      ssh_vagrant_hostname: web-2
+                      ansible_host: 10.0.0.22
+                loadbalancers:
+                  hosts:
+                    lb-web:
+                      ssh_vagrant_hostname: lb-web
+                      ansible_host: 10.0.0.11
+                dnsservers:
+                  hosts:
+                    dns-1:
+                      ssh_vagrant_hostname: dns-1
+                      ansible_host: 10.0.0.23
+                bastions:
+                  hosts:
+                    bastion:
+                      ssh_vagrant_hostname: bastion
+                      ansible_host: 10.0.0.111
