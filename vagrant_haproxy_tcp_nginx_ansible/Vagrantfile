@@ -25,14 +25,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.cpus = servers["cpu"]
         libvirt.memory = servers["ram"]
       end
-      if servers["name"]== "web-lb"
-        srv.vm.provision "shell", path: "script_web-lb.sh"
-        srv.vm.provision "shell", path: "script_firewall.sh"
-      elsif servers["name"].start_with?('web') && servers["name"] != "web-lb"
-        srv.vm.provision "shell", path: "script_web.sh"
-        srv.vm.provision "shell", path: "script_firewall.sh"
-      elsif servers["name"].start_with?('bastion')
-        srv.vm.provision "shell", path: "script_firewall.sh"
+      # Provisioners
+      srv.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/playbook-vms-v2.yaml"
+        ansible.compatibility_mode = "2.0"
+        ansible.inventory_path = "ansible/inventories/inventory.yaml"
+        ansible.config_file = "ansible/ansible.cfg"
+        # ansible.raw_arguments = ["-vvv"]
       end
     end
   end

@@ -1,0 +1,13 @@
+---
+- name: Starting nginx service, if it's not started
+  ansible.builtin.service:
+    name: nginx
+    state: started
+
+# - name: Restarting nginx service, if config file has been changed
+#   systemd:
+#     name: nginx
+#     state: restarted
+#   # when: nginx_config_path.changed and index_path.changed
+#   when:
+#     - index_file.changed

@@ -24,16 +24,16 @@ if yum list installed | grep -q nginx
 then
     echo "==> Info: Nginx service is already installed."
 else
-    
+
     echo "==> Info: Installing Nginx service:"
     sudo yum -y install nginx
 fi
 
 STATUS=$(systemctl is-active nginx.service; exit 0)
 
-if [ "${STATUS}" = "active" ] 
+if [ "${STATUS}" = "active" ]
 then
-    echo "==> Info: Nginx service is working..." 
+    echo "==> Info: Nginx service is working..."
 else
     echo "==> Info: Nginx was inactive. Starting service..."
     systemctl start nginx.service
@@ -70,4 +70,3 @@ else
     echo "==> Info: Index.html doesnt exists. Inserting file..."
     mv $TMP_INDEX_PATH $INDEX_PATH
 fi
-

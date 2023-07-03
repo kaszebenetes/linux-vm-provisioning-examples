@@ -7,9 +7,7 @@
 
 
 
-
-
-sudo iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT -> 
+sudo iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT ->
 iptables -I OUTPUT -p tcp --dport 443 -j ACCEPT -> Allows https connections
 iptables -I OUTPUT -p udp --dport 53 -j ACCEPT -> Allows to resolve dns hosts
 iptables -I OUTPUT -p tcp --dport 22 -j ACCEPT -> Allows to entry by ssh to another vms

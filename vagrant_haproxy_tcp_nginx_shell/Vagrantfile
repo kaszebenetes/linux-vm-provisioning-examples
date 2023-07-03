@@ -15,25 +15,43 @@ servers = YAML.load_file('servers.yaml')
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Iterate through entries in YAML file
-  servers.each do |servers|
-    config.vm.define servers["name"] do |srv|
-      srv.vm.hostname = servers["name"]
-      srv.vm.box = servers["box"]
-      srv.vm.network "private_network", ip: servers["ip"]
+  servers.each do |server|
+    config.vm.define server["name"] do |srv|
+      srv.vm.hostname = server["name"]
+      srv.vm.box = server["box"]
+      srv.vm.network "private_network", ip: server["ip"]
       srv.vm.provider :libvirt do |libvirt|
         libvirt.qemu_use_session = false
-        libvirt.cpus = servers["cpu"]
-        libvirt.memory = servers["ram"]
+        libvirt.cpus = server["cpu"]
+        libvirt.memory = server["ram"]
       end
-      if servers["name"]== "web-lb"
-        srv.vm.provision "shell", path: "script_web-lb.sh"
-        srv.vm.provision "shell", path: "script_firewall.sh"
-      elsif servers["name"].start_with?('web') && servers["name"] != "web-lb"
-        srv.vm.provision "shell", path: "script_web.sh"
-        srv.vm.provision "shell", path: "script_firewall.sh"
-      elsif servers["name"].start_with?('bastion')
-        srv.vm.provision "shell", path: "script_firewall.sh"
+      # TODO: fix SSH config via bastion
+      # if server["name"] != "bastion"
+      #   srv.ssh.host = server["ip"]
+      #   srv.ssh.extra_args = ["-vvv", "-A", "-J", "vagrant@10.0.0.111"]
+      #   # srv.ssh.extra_args = ["-o", "ProxyCommand='ssh vagrant@10.0.0.111 -i .vagrant/machines/bastion/libvirt/private_key -W %h:%p '"]
+      #   # srv.ssh.proxy_command = "ssh vagrant@10.0.0.111 -i .vagrant/machines/bastion/libvirt/private_key -W %h:%p"
+      # end
+      # srv.ssh.insert_key = false
+      # if File.exist? ".vagrant/machines/#{server['name']}/flag"
+      #   srv.ssh.host = server["ip"]
+      #   srv.ssh.password = "vagrant"
+      #   if server["name"] != "bastion"
+      #     srv.ssh.extra_args = ["-vvv", "-A", "-J", "vagrant@10.0.0.111"]
+      #   end
+      # end
+      # Provisioners
+      srv.vm.provision "shell", path: "scripts/script_bootstrap.sh"
+      if server["name"] == "lb-web"
+        srv.vm.provision "shell", path: "scripts/script_lb-web.sh"
+      elsif server["name"].start_with?('web')
+        srv.vm.provision "shell", path: "scripts/script_web.sh"
       end
+      srv.vm.provision "shell", path: "scripts/script_firewall.sh"
+      # srv.trigger.after :up do |trigger|
+      #   trigger.info = "More information"
+      #   trigger.run = {inline: "bash -c \"echo 'firewall applied' > .vagrant/machines/#{server['name']}/flag\""}
+      # end
     end
   end
 end

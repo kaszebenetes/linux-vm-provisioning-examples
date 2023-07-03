@@ -1,0 +1,117 @@
+---
+
+# - hosts: all
+#   gather_facts: true
+#   become: true
+
+- hosts: webservers
+  gather_facts: true
+  become: true
+  tasks:
+    - debug:
+        msg: "Provisioning web-servers.."
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+
+    - name: Install the latest version repository epel-release
+      ansible.builtin.yum:
+        name: epel-release
+        state: latest
+
+    - name: Install the latest version of Nginx
+      ansible.builtin.yum:
+        name: nginx
+        state: latest
+
+    - name: Starting nginx service, if it's not started
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+    - name: Restarting nginx service, if config file has been changed
+      systemd:
+        name: nginx
+        state: restarted
+      when: nginx_config_path.changed and index_path.changed
+
+    - name: Inserting content of index.html
+      ansible.builtin.copy:
+        content: ./web_config/index.txt
+        dest: "/usr/share/nginx/html/index.html"
+
+- hosts: loadbalancers
+  gather_facts: true
+  become: true
+  tasks:
+    - debug:
+        msg: "Provisioning load-balancers.."
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+    - name: Install the latest version repository epel-release
+      ansible.builtin.yum:
+        name: epel-release
+        state: latest
+
+    - name: Install the latest version of Haproxy
+      ansible.builtin.yum:
+        name: haproxy
+        state: latest
+
+    - name: Starting haproxy service, if it's not started
+      ansible.builtin.service:
+        name: haproxy
+        state: started
+
+    - name: Inserting content of index.html
+      ansible.builtin.copy:
+        content: ./lb_config/haproxy.txt
+        dest: "{{ haproxy_config }}"
+      when: " './../vms/lb_config/haproxy.txt' != '{{ haproxy_config }}'"
+
+    - name: Restarting Haproxy service, if config file has been changed
+      systemd:
+        name: haproxy
+        state: restarted
+      when: "{{ haproxy_config }}.changed"
+
+- hosts: dnsservers
+  gather_facts: true
+  become: true
+  tasks:
+
+    - debug:
+        msg: "Provisioning dns-servers.."
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+
+    - name: Install the latest version repository epel-release
+      ansible.builtin.yum:
+        name: epel-release
+        state: latest
+
+    - debug:
+        msg: "Setting up firewall rules dns-servers.."
+
+    - name: Firewall rules are setting..
+      command: bash ./../vms/dns_config/firewall.sh
+
+- hosts: bastions
+  gather_facts: true
+  become: true
+  tasks:
+
+    - debug:
+        msg: "Provisioning bastions.."
+    # - debug:
+    #     var: hostvars[inventory_hostname]
+
+    - name: Install the latest version repository epel-release
+      ansible.builtin.yum:
+        name: epel-release
+        state: latest
+
+    - debug:
+        msg: "Setting up firewall rules dns-servers.."
+
+    - name: Firewall rules are setting..
+      command: bash ./../vms/bastion_config/firewall.sh
