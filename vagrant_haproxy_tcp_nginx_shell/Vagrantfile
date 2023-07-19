@@ -26,12 +26,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         libvirt.memory = server["ram"]
       end
       # TODO: fix SSH config via bastion
-      # if server["name"] != "bastion"
-      #   srv.ssh.host = server["ip"]
-      #   srv.ssh.extra_args = ["-vvv", "-A", "-J", "vagrant@10.0.0.111"]
-      #   # srv.ssh.extra_args = ["-o", "ProxyCommand='ssh vagrant@10.0.0.111 -i .vagrant/machines/bastion/libvirt/private_key -W %h:%p '"]
-      #   # srv.ssh.proxy_command = "ssh vagrant@10.0.0.111 -i .vagrant/machines/bastion/libvirt/private_key -W %h:%p"
-      # end
+      if server["name"] != "bastion"
+        srv.ssh.host = server["ip"]
+        srv.ssh.extra_args = ["-vvv", "-A", "-J", "vagrant@10.0.0.111"]
+        srv.ssh.forward_agent = true
+        srv.ssh.extra_args = ["-o", "ProxyCommand='ssh -A -i .vagrant/machines/bastion/libvirt/private_key -l vagrant 10.0.0.111 -W %h:%p '"]
+        srv.ssh.proxy_command = "ssh vagrant@10.0.0.111 -i .vagrant/machines/bastion/libvirt/private_key -W %h:%p"
+      end
       # srv.ssh.insert_key = false
       # if File.exist? ".vagrant/machines/#{server['name']}/flag"
       #   srv.ssh.host = server["ip"]
