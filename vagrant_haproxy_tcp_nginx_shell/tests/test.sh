@@ -71,3 +71,29 @@ then
 else
     echo "==> INFO: ✔️ Web-2's iptables haven't been stored."
 fi
+
+# Checking what ports are allowed in bastion firewall rules..
+
+bastion_accept_ports=$(ssh vagrant@bastion "sudo iptables -L")
+open_ports=$(echo "$bastion_accept_ports" | awk '/(ACCEPT)/ && /dpt:/ {print $NF}')
+
+if [ -n "$open_ports" ] 
+then
+    echo "==> INFO: Allowed ports in bastion's firewall rules:"
+    echo "$open_ports"
+else
+    echo "==> INFO: No ports allowed in bastion's firewall rules."
+fi
+
+# Checking what ports are dropped/rejected in bastion firewall rules..
+
+bastion_drop_reject_ports=$(ssh vagrant@bastion "sudo iptables -L")
+open_ports=$(echo "$bastion_drop_reject_ports" | awk '/(DROP|REJECT)/ && /dpt:/ {print $NF}')
+
+if [ -n "$open_ports" ] 
+then
+    echo "==> INFO: Dropped/rejected ports in bastion's firewall rules:"
+    echo "$open_ports"
+else
+    echo "==> INFO: No ports dropped/rejected in bastion's firewall rules."
+fi
