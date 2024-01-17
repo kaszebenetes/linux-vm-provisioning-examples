@@ -1,27 +1,39 @@
-import testinfra
-import unittest
-import subprocess
-# Run script with "--hosts=*server*" argument.
+import infra
 
-def test_ssh_bastion(host):
-    bastion=host.addr("10.0.0.111")
-    assert bastion.port(22).is_reachable
-    
-def test_ssh_pf_bastion_to_web1(host):
-    adress=subprocess("ssh -L 22:10.0.0.21:8080 vagrant@10.0.0.111")
-    web1=host.addr(ssh://22:10.0.0.21:8080 vagrant@10.0.0.111)
-    assert web1.port(22).is_reachable
-    assert web1.port(80).is_reachable
+def test_ssh_connection(host):
+    try:
+        infra.ssh(host, command="exit", timeout=5)
+        print(f"==> INFO: ✔️ SSH connection to {host} is available for you.")
+        return True
+    except Exception as e:
+        print(f"==> INFO: ❌ Something went wrong.. No access to {host}. {str(e)}")
+        return False
 
-def test_ssh_pf_bastion_to_web2(host):
-    web2=host.addr("10.0.0.22")
-    assert web2.port(22).is_reachable
-    assert web2.port(80).is_reachable
+def check_iptables(host):
+    try:
+        iptables_output = infra.ssh(host, command="sudo cat /etc/sysconfig/iptables")
+        if not iptables_output.strip():
+            print(f"==> INFO: ❌ {host} iptables haven't been stored.")
+        else:
+            print(f"==> INFO: ✔️ {host} iptables have been stored.")
+    except Exception as e:
+        print(f"==> INFO: ❌ Failed to check iptables on {host}. {str(e)}")
 
-def test_ssh_pf_bastion_to_weblb(host):
-    weblb=host.addr("10.0.0.11")
-    assert weblb.port(22).is_reachable
+bastion_host = 'bastion'
+web1_host = 'web-1'
+web2_host = 'web-2'
+weblb_host = 'web-lb'
 
-def iptablesbastion(host):
-    bastion=host.addr("10.0.0.111")
-    assert host.Iptables.rules()
+# Testing SSH connection to bastion
+test_ssh_connection(bastion_host)
+
+# Testing SSH connection through bastion to other VMs
+test_ssh_connection(web1_host)
+test_ssh_connection(web2_host)
+test_ssh_connection(weblb_host)
+
+# Checking if iptables have been stored
+check_iptables(bastion_host)
+check_iptables(web1_host)
+check_iptables(web2_host)
+check_iptables(weblb_host)

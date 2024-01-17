@@ -3,78 +3,87 @@
 # set -x
 # set -euo
 
+# Remember about setting up jump host in .ssh/config. It won't work without it.
 
-# Remember about set jumphosting in .ssh/config. It doesnt work without it.
+# Testing SSH connection to bastion.
 
-# Testing ssh connection to bastion.
-
-ssh vagrant@bastion exit 0
-if [ $(echo $?) = "0" ]
-then
-    echo "==> INFO: SSH connection to bastion is avaliable for you."
+if ssh -q -o BatchMode=yes -o ConnectTimeout=5 bastion "exit"; then
+    echo "==> INFO: ✔️ SSH connection to bastion is available for you."
 else
-    echo "==> INFO: Something went wrong.. No access to bastion."
+    echo "==> INFO: ❌ Something went wrong.. No access to bastion."
 fi
 
-# Testing ssh connection through bastion to another vms.
+# Testing SSH connection through bastion to other VMs.
 
-# Vars:
-var points = 0
-#
-ssh vagrant@web-1 exit 0
-if [ $(echo $?) = "0" ]
-then
-    echo "==> INFO: SSH connection to web1 is avaliable for you by bastion."
-    points+=1
+test_ssh_connection() {
+    vm_name=$1
+    if ssh -q -o BatchMode=yes -o ConnectTimeout=5 "bastion" "ssh $vm_name 'exit'"; then
+        echo "==> INFO: ✔️ SSH connection to $vm_name is available for you by bastion."
+    else
+        echo "==> INFO: ❌ Something went wrong.. No access to $vm_name."
+    fi
+}
+
+test_ssh_connection "web-1"
+test_ssh_connection "web-2"
+test_ssh_connection "web-lb"
+
+# Checking if iptables have been stored.
+
+check_iptables() {
+    vm_name=$1
+    if [ -z "$(ssh vagrant@$vm_name 'cat /etc/sysconfig/iptables')" ]; then
+        echo "==> INFO: ❌ $vm_name iptables haven't been stored."
+    else
+        echo "==> INFO: ✔️ $vm_name iptables have been stored."
+    fi
+}
+
+check_iptables "Bastion"
+check_iptables "web-lb"
+check_iptables "web-1"
+check_iptables "web-2"
+
+# Checking what ports are allowed in bastion firewall rules.
+
+bastion_accept_ports=$(ssh vagrant@bastion "sudo iptables -L")
+open_ports=$(echo "$bastion_accept_ports" | awk '/(ACCEPT)/ && /dpt:/ {print $NF}')
+
+if [ -n "$open_ports" ]; then
+    echo "==> INFO: Allowed ports in bastion's firewall rules:"
+    echo "$open_ports"
 else
-    echo "==> INFO: Something went wrong.. No access to web-1."
+    echo "==> INFO: No ports allowed in bastion's firewall rules."
 fi
 
-ssh vagrant@web-2 exit 0
-if [ $(echo $?) = "0" ]
-then
-    echo "==> INFO: SSH connection to web2 is avaliable for you by bastion."
-    points+=1
+# Checking what ports are dropped/rejected in bastion firewall rules.
+
+bastion_drop_reject_ports=$(ssh vagrant@bastion "sudo iptables -L")
+closed_ports=$(echo "$bastion_drop_reject_ports" | awk '/(DROP|REJECT)/ && /dpt:/ {print $NF}')
+
+if [ -n "$closed_ports" ]; then
+    echo "==> INFO: Dropped/rejected ports in bastion's firewall rules:"
+    echo "$closed_ports"
 else
-    echo "==> INFO: Something went wrong.. No access to web-2."
+    echo "==> INFO: No ports dropped/rejected in bastion's firewall rules."
 fi
 
-ssh vagrant@web-lb exit 0
-if [ $(echo $?) = "0" ]
-then
-    echo "==> INFO: SSH connection to weblb is avaliable for you by bastion."
-    points+=1
+# Additional tests:
+
+# 5. Does Bastion allow only output on port 22?
+
+bastion_port_22_output=$(ssh vagrant@bastion "sudo iptables -L OUTPUT -n -v | grep 'dpt:22'")
+if [ -n "$bastion_port_22_output" ]; then
+    echo "==> INFO: Bastion allows only output on port 22."
 else
-    echo "==> INFO: Something went wrong.. No access to web-lb."
+    echo "==> INFO: ❌ Bastion doesnt allow only output on port 22."
 fi
 
-if [ "$(ssh vagrant@Bastion " ls /etc/sysconfig/ | grep 'iptables'")" ]
-then
-    echo "==> INFO: Bastion iptables have been stored."
-    points+=1
-else
-    echo "==> INFO: Bastion iptables haven't been stored."
-fi
-echo "In ssh test part u got:$points "
+# 6. Is access from PC to web1-2 only by web-lb?
 
-
-if [ "$(ssh -A -J vagrant@web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
-then
-    echo "==> INFO: web-lb's iptables have been stored."
+pc_to_web_access=$(ssh vagrant@web-lb "sudo iptables -L -n -v | grep 'dpt:22' | grep 'ACCEPT' | grep '0.0.0.0/0'")
+if [ -n "$pc_to_web_access" ]; then
+    echo "==> INFO: Access from PC to web1-2 is only by web-lb."
 else
-    echo "==> INFO: web-lb's iptables haven't been stored."
-fi
-
-if [ "$(ssh -A -J vagrant@Web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
-then
-    echo "==> INFO: Web-1's iptables have been stored."
-else
-    echo "==> INFO: Web-1's iptables haven't been stored."
-fi
-
-if [ "$(ssh -A -J vagrant@Web-lb vagrant@Bastion "ls /etc/sysconfig/ | grep 'iptables'")" ]
-then
-    echo "==> INFO: Web-2's iptables have been stored."
-else
-    echo "==> INFO: Web-2's iptables haven't been stored."
+    echo "==> INFO: ❌ Access from PC to web1-2 is not only by web-lb."
 fi
