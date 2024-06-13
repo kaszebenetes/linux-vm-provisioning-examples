@@ -5,7 +5,7 @@
 *** Don't forget to give the project a star!
 *** Thanks again! Now go create something AMAZING! :D
 -->
-<!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `Kobeep`, `linux-vm-provisioning-examples`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
+<!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `kaszebenetes`, `linux-vm-provisioning-examples`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
 
 <!-- PROJECT SHIELDS -->
 <!--
@@ -25,7 +25,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/Kobeep/linux-vm-provisioning-examples">
+  <a href="https://github.com/kaszebenetes/linux-vm-provisioning-examples">
     <img src="images/ansible-vagrant.png" alt="Logo" width="350" height="150">
   </a>
 
@@ -74,13 +74,6 @@ The project demonstrates two approaches to automatically creating and configurin
 ### Built With
 
 * [![Ansible][ansible.com]][Ansible-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
 
 
 
@@ -100,8 +93,10 @@ The project demonstrates two approaches to automatically creating and configurin
 2. Install the required packages:
    
     ```sh
-    sudo dnf install @virtualization
-    sudo dnf install libvirt libvirt-devel qemu-kvm
+    sudo -i
+    dnf install @virtualization
+    dnf install libvirt libvirt-devel qemu-kvm
+    
     ```
 
 3. Start and enable the libvirtd service:
@@ -198,12 +193,103 @@ The project demonstrates two approaches to automatically creating and configurin
     sudo yum install vagrant
     ```
 
+### Installing Ansible, Python
+
+***Fedora***
+
+Instalation:
+   
+   ```sh
+    sudo -i
+    dnf install -y git python3-pip curl sudo
+    pip3 install ansible
+   ```
+
+
+***Ubuntu***
+
+Instalation:
+   
+   ```sh
+   sudo -i
+   apt install python3
+   apt install python3-pip
+   apt install ansible
+   ```
+
+***Red Hat***
+
+Instalation:
+   
+   ```sh
+   sudo -i
+   dnf install epel-release
+   dnf install python3
+   dnf install python3-pip
+   dnf install ansible
+   ```
+
+
 <!-- USAGE EXAMPLES -->
 ## Usage
-1. Cloning repository:
+
+### Vagrant provisioning(shell):
+
+1. Create/Choose catalog where you want to extract the repository, in example:
 
     ```sh
-    git clone 
+    mkdir ~/Documents/github
+    cd ~/Documents/github
+    ```
+
+2. Cloning repository:
+
+    ```sh
+    git clone https://github.com/kaszebenetes/examples.git
+    ```
+
+3. Run vagrant:
+
+    ```sh
+    // Getting to relevant catalog
+    cd linux-vm-provisioning-examples/vagrant_haproxy_tcp_nginx_shell/ 
+    // Starting up virtual machines using Vagrant
+    vagrant up
+    // Provisioning will be done by itself.
+    ```
+
+### Ansible:
+
+1. Create/Choose catalog where you want to extract the repository, in example:
+
+    ```sh
+    mkdir ~/Documents/github
+    cd ~/Documents/github
+    ```
+
+2. Clone repository:
+
+    ```sh
+    git clone https://github.com/kaszebenetes/examples.git
+    ```
+
+3. Run vagrant:
+
+    ```sh
+    // Getting to relevant catalog
+    cd linux-vm-provisioning-examples/vagrant_haproxy_tcp_nginx_ansible/ 
+    // Starting up virtual machines using Vagrant
+    vagrant up
+    ```
+
+4. Change ***user_name*** in ***ansible/inventories/inventory.yaml*** to your Fedora username and run Ansible:
+    ```sh
+    // Edit and change user_name
+    vim ~/Documents/linux-vm-provisioning-examples/vagrant_haproxy_tcp_nginx_ansible/ansible/inventories/inventory.yaml
+
+    // run ansible
+    cd ~/Documents/linux-vm-provisioning-examples/vagrant_haproxy_tcp_nginx_ansible/ansible/
+    ansible-playbook -i ./inventories/inventory.yaml playbook-vms.yaml
     ```
 
 <!-- CONTRIBUTING -->
@@ -232,45 +318,23 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/Kobeep/linux-vm-provisioning-examples](https://github.com/Kobeep/linux-vm-provisioning-examples)
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-
+Project Link: [https://github.com/kaszebenetes/linux-vm-provisioning-examples](https://github.com/kaszebenetes/linux-vm-provisioning-examples)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/Kobeep/linux-vm-provisioning-examples.svg?style=for-the-badge
-[contributors-url]: https://github.com/Kobeep/linux-vm-provisioning-examples/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Kobeep/linux-vm-provisioning-examples.svg?style=for-the-badge
-[forks-url]: https://github.com/Kobeep/linux-vm-provisioning-examples/network/members
-[stars-shield]: https://img.shields.io/github/stars/Kobeep/linux-vm-provisioning-examples.svg?style=for-the-badge
-[stars-url]: https://github.com/Kobeep/linux-vm-provisioning-examples/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Kobeep/linux-vm-provisioning-examples.svg?style=for-the-badge
-[issues-url]: https://github.com/Kobeep/linux-vm-provisioning-examples/issues
-[license-shield]: https://img.shields.io/github/license/Kobeep/linux-vm-provisioning-examples.svg?style=for-the-badge
-[license-url]: https://github.com/Kobeep/linux-vm-provisioning-examples/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
+[contributors-url]: https://github.com/kaszebenetes/linux-vm-provisioning-examples/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
+[forks-url]: https://github.com/kaszebenetes/linux-vm-provisioning-examples/network/members
+[stars-shield]: https://img.shields.io/github/stars/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
+[stars-url]: https://github.com/kaszebenetes/linux-vm-provisioning-examples/stargazers
+[issues-shield]: https://img.shields.io/github/issues/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
+[issues-url]: https://github.com/kaszebenetes/linux-vm-provisioning-examples/issues
+[license-shield]: https://img.shields.io/github/license/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
+[license-url]: https://github.com/kaszebenetes/linux-vm-provisioning-examples/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com
+
+[Ansible.com]: https://img.shields.io/badge/ansible-EE0000?style=plastic&logo=ansible&logoColor=white
+[Ansible-url]: https://ansible.com
