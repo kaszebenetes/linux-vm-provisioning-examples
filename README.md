@@ -304,7 +304,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the GNU GPLv3 License. See `LICENSE` for more information.
 
 
 
@@ -313,6 +313,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Project Link: [https://github.com/kaszebenetes/linux-vm-provisioning-examples](https://github.com/kaszebenetes/linux-vm-provisioning-examples)
 
+## Acknowledgements
+
+- [Best-README-Template](https://github.com/othneildrew/Best-README-Template)
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/kaszebenetes/linux-vm-provisioning-examples.svg?style=for-the-badge
