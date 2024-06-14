@@ -61,12 +61,14 @@ The project demonstrates two approaches to automatically creating and configurin
 
 **Approach 2 (Ansible):** Utilizes Vagrant to launch machines, but Ansible is used to define the target state of the infrastructure and perform automatic configuration.
 
-
+***Tests***: I have created SSH connectivity tests using Bash, Python, and the Pyinfra framework to ensure seamless server communication and validate firewall rules.
 
 ### Built With
 
-* [![Ansible][ansible.com]][Ansible-url]
-
+* ![Vagrant](https://img.shields.io/badge/vagrant-%231563FF.svg?style=for-the-badge&logo=vagrant&logoColor=white)
+* ![Ansible](https://img.shields.io/badge/ansible-%231A1918.svg?style=for-the-badge&logo=ansible&logoColor=white)
+* ![Shell Script](https://img.shields.io/badge/shell_script-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white)
+* ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
 
 <!-- GETTING STARTED -->
@@ -230,8 +232,8 @@ Instalation:
 1. Create/Choose catalog where you want to extract the repository, in example:
 
     ```sh
-    mkdir ~/Documents/github
-    cd ~/Documents/github
+    mkdir ~/Documents/
+    cd ~/Documents/
     ```
 
 2. Cloning repository:
@@ -255,8 +257,8 @@ Instalation:
 1. Create/Choose catalog where you want to extract the repository, in example:
 
     ```sh
-    mkdir ~/Documents/github
-    cd ~/Documents/github
+    mkdir ~/Documents/
+    cd ~/Documents/
     ```
 
 2. Clone repository:
@@ -331,6 +333,3 @@ Project Link: [https://github.com/kaszebenetes/linux-vm-provisioning-examples](h
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/jakub-pospieszny-085a632a0/
 [product-screenshot]: images/screenshot.png
-
-[Ansible.com]: https://img.shields.io/badge/ansible-EE0000?style=plastic&logo=ansible&logoColor=white
-[Ansible-url]: https://ansible.com
